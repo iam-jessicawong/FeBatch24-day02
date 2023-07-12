@@ -1,10 +1,10 @@
 import "./App.css";
-import RegionViewApi from "./RegionView/RegionViewApi";
+import Route from "./Route";
 
 function App() {
   return (
     <div>
-      <RegionViewApi />
+      <Route />
     </div>
   );
 }

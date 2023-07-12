@@ -1,56 +1,59 @@
 import React, { useEffect, useState } from "react";
-import RegionApi from "../api/RegionApi";
-import RegionCreate from "./RegionCreate";
-import RegionUpdate from "./RegionUpdate";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  DeleteRegionRequest,
+  GetRegionRequest,
+} from "../ReduxSaga/Action/RegionAction";
+import FormikSagaRegion from "./FormikSagaRegion";
+import FormikSagaRegionUpdate from "./FormikSagaRegionUpdate";
 
-export default function RegionViewApi() {
-  const [region, setRegion] = useState([]);
+export default function RegionSagaView() {
+  const dispatch = useDispatch();
+  const { regions } = useSelector((state) => state.regionState);
   const [refresh, setRefresh] = useState(false);
   const [display, setDisplay] = useState(false);
-  const [update, setUpdate] = useState(false);
-  const [updateData, setUpdateData] = useState({});
+  const [update, setUpdate] = useState({
+    open: false,
+    region: {},
+  });
+
   useEffect(() => {
-    RegionApi.list().then((data) => {
-      setRegion(data);
-    });
-    setRefresh(false);
+    dispatch(GetRegionRequest());
   }, [refresh]);
+
   const onDelete = async (id) => {
-    RegionApi.deleted(id).then(() => {
-      window.alert("Data successfully deleted");
-      setRefresh(true);
-    });
+    dispatch(DeleteRegionRequest(id));
+    window.alert("Data successfully deleted");
+    setRefresh(true);
   };
+
   return (
     <div>
       {display ? (
-        <RegionCreate setRefresh={setRefresh} setDisplay={setDisplay} />
-      ) : update ? (
-        <RegionUpdate
-          setRefresh={setRefresh}
+        <FormikSagaRegion setDisplay={setDisplay} setRefresh={setRefresh} />
+      ) : update.open ? (
+        <FormikSagaRegionUpdate
           setUpdate={setUpdate}
-          updateData={updateData}
+          setRefresh={setRefresh}
+          update={update}
         />
       ) : (
         <>
           <h2>List Regions</h2>
-          <button onClick={() => setDisplay(true)}>Add Regions</button>
+          <button onClick={() => setDisplay(true)}>Add Region</button>
           <table>
             <th>Region ID</th>
             <th>Region Name</th>
             <th>Action</th>
             <tbody>
-              {region &&
-                region.map((reg) => (
+              {regions &&
+                regions.map((reg) => (
                   <tr key={reg.regionId}>
                     <td>{reg.regionId}</td>
                     <td>{reg.regionName}</td>
                     <td>
                       <button
-                        onClick={() => {
-                          setUpdate(true);
-                          setUpdateData(reg);
-                        }}
+                        onClick={() => setUpdate({ open: true, region: reg })}
                       >
                         Update
                       </button>

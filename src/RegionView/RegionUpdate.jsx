@@ -3,7 +3,7 @@ import RegionApi from "../api/RegionApi";
 
 export default function RegionUpdate(props) {
   const [value, setValue] = useState({
-    name: props.updateData.region_name || "",
+    name: props.updateData.regionName || "",
   });
   const handleChange = (name) => (event) => {
     setValue({ ...value, [name]: event.target.value });
@@ -12,7 +12,7 @@ export default function RegionUpdate(props) {
     const payload = {
       name: value.name,
     };
-    await RegionApi.update(props.updateData.region_id, payload).then(() => {
+    await RegionApi.update(props.updateData.regionId, payload).then(() => {
       props.setRefresh(true);
       window.alert("Data success update");
     });
