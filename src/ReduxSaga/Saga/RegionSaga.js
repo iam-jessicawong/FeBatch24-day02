@@ -35,6 +35,7 @@ function* updateRegion(action) {
   try {
     const result = yield call(RegionApi.update, payload.id, payload.payload);
     yield put(UpdateRegionSuccess(result));
+    yield call(handleRegion);
   } catch (error) {
     yield put(UpdateRegionFailed(error));
   }
@@ -43,8 +44,9 @@ function* updateRegion(action) {
 function* deleteRegion(action) {
   const { payload } = action;
   try {
-    const result = yield call(RegionApi.deleted(payload));
+    const result = yield call(RegionApi.deleted, payload);
     yield put(DeleteRegionSuccess(result));
+    yield call(handleRegion);
   } catch (error) {
     yield put(DeleteRegionFailed(error));
   }

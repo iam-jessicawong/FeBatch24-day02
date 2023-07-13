@@ -12,8 +12,11 @@ export default function FormikSagaRegionUpdate(props) {
       name: region.regionName || undefined,
     },
     onSubmit: async (values) => {
-      let payload = new FormData();
-      payload.append("name", values.name);
+      let formData = new FormData();
+      formData.append("name", values.name);
+      const payload = {
+        name: formData.get("name"),
+      };
       dispatch(UpdateRegionRequest({ id: region.regionId, payload }));
       props.setUpdate({ ...props.update, open: false });
       window.alert("Data Successfully Updated");
